@@ -1,0 +1,154 @@
+<!-- Create a countdown timer using HTML, CSS, and JavaScript.
+1. User should put the time (in minutes) and click start
+2. The timer starts counting down. It should stop when the time ends -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    font-family: Arial, sans-serif;
+    }
+
+    #countdown {
+        font-size: 48px;
+        margin-top: 20px;
+        margin-left: 70px;
+    }
+
+    #error {
+        color: red;
+        margin-top: 10px;
+    }
+
+    #countdone {
+        color: green;
+        margin-top: 10px;
+        margin-left: 65px;
+        font-size: 35px;
+    }
+    #container {
+        background-color: black;
+        color: white;
+        padding: 15px;
+        border-radius: 10px;
+    }
+    #minutesInput {
+        padding: 5px;
+    }
+    #startBtn{
+        padding: 5px;
+        width: 60px;
+        
+    }
+    #image{
+        width: 70px;
+        height: 70px;
+        margin-top: 30px;
+        margin-left: 95px;
+    }
+
+
+    @keyframes bounce {
+    0%, 100% {
+        transform: translateY(-25%);
+        animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+    }
+    50% {
+        transform: translateY(0);
+        animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+    }
+    }
+    .bounce {
+        animation: bounce 1s infinite;
+    }
+    #clocksound {
+        display: none;
+    }
+
+</style>
+<body>
+    <div id="container">
+        <h1>Coundown Timer</h1>
+        <input type="number" placeholder="Enter minutes" id="minutesInput">
+        <button id="startBtn">Start</button>
+        <div>
+            <img src="alarm-clock-of-circular-shape.png" id="image">
+        </div>
+
+        <div id="countdown">
+            00:00
+        </div>
+        <div id="error"></div>
+        <div id="countdone"></div>
+        <div>
+            <audio id="clocksound" src="mixkit-classic-alarm-995.wav"></audio>
+        </div>
+    </div>
+    <script>
+        let input = document.getElementById("minutesInput");
+        let btn = document.getElementById("startBtn");
+        let count = document.getElementById("countdown");
+        let error = document.getElementById("error");
+        let completed = document.getElementById("countdone");
+        let image = document.getElementById("image")
+        let sound = document.getElementById("clocksound")
+        let intervalId; 
+
+        btn.addEventListener('click', (e) => {
+            e.preventDefault();
+
+            
+            if (intervalId) {
+                clearInterval(intervalId);
+            }
+
+            let minutes = parseInt(input.value);
+
+            if (isNaN(minutes) || minutes <= 0) {
+                error.innerText = "Please enter a valid number of minutes.";
+                return;
+            }
+
+            error.innerText = ""; 
+            completed.innerText = ""; 
+
+            let timeLeft = minutes * 60;
+            displayTime(timeLeft);
+
+            intervalId = setInterval(() => {
+                timeLeft--;
+
+                if (timeLeft <= 0) {
+                    clearInterval(intervalId);
+                    count.textContent = '00:00';
+                    count.style.color = 'red'
+                    image.classList.add('bounce')
+                    setTimeout(() => image.classList.remove('bounce'), 5000)
+                    sound.play()
+                    completed.innerText = 'Time is up!';
+                } else {
+                    displayTime(timeLeft);
+                }
+            }, 1000);
+        });
+
+        
+        function displayTime(seconds) {
+            let mins = String(Math.floor(seconds / 60)).padStart(2, '0');
+            let secs = String(seconds % 60).padStart(2, '0');
+            count.textContent = `${mins}:${secs}`;
+        }
+
+    </script>
+</body>
+</html>
